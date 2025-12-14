@@ -31,6 +31,31 @@ func main() {
 		}
 		messageInput = messageInput[:len(messageInput)-1] // Remove newline
 
+		// Check if user wants to block someone
+		if len(messageInput) > 6 && messageInput[:6] == "block " {
+			username := messageInput[6:]
+			
+			conn, err := grpc.Dial("localhost:50051",
+				grpc.WithTransportCredentials(insecure.NewCredentials()))
+			if err != nil {
+				log.Fatalf("Verbindung fehlgeschlagen: %v", err)
+			}
+			defer conn.Close()
+
+			c := pb.NewGreeterClient(conn)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+
+			r, err := c.BlockUser(ctx, &pb.BlockRequest{
+				Username: username,
+			})
+			if err != nil {
+				log.Fatalf("Aufruf fehlgeschlagen: %v", err)
+			}
+			log.Printf("Antwort: %s", r.GetMessage())
+			continue
+		}
+
 		fmt.Printf("Name: %s, Nachricht: %s\n", nameInput, messageInput)
 
 		conn, err := grpc.Dial("localhost:50051",

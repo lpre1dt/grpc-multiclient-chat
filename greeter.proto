@@ -7,6 +7,7 @@ option go_package = "grpc-example/proto";
 service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc SendChat (ChatRequest) returns (Recived) {}
+  rpc BlockUser (BlockRequest) returns (BlockResponse) {}
 }
 
 message HelloRequest {
@@ -22,4 +23,13 @@ message Recived {
 }
 message HelloReply {
   string message = 1;
+}
+
+message BlockRequest {
+  string username = 1;
+}
+
+message BlockResponse {
+  string message = 1;
+  bool success = 2;
 }
