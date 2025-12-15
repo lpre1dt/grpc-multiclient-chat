@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Greeter_SayHello_FullMethodName = "/greeter.Greeter/SayHello"
-	Greeter_SendChat_FullMethodName = "/greeter.Greeter/SendChat"
+	Greeter_SayHello_FullMethodName  = "/greeter.Greeter/SayHello"
+	Greeter_SendChat_FullMethodName  = "/greeter.Greeter/SendChat"
+	Greeter_BlockUser_FullMethodName = "/greeter.Greeter/BlockUser"
 )
 
 // GreeterClient is the client API for Greeter service.
@@ -29,6 +30,7 @@ const (
 type GreeterClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	SendChat(ctx context.Context, in *ChatRequest, opts ...grpc.CallOption) (*Recived, error)
+	BlockUser(ctx context.Context, in *BlockRequest, opts ...grpc.CallOption) (*BlockResponse, error)
 }
 
 type greeterClient struct {
@@ -59,12 +61,23 @@ func (c *greeterClient) SendChat(ctx context.Context, in *ChatRequest, opts ...g
 	return out, nil
 }
 
+func (c *greeterClient) BlockUser(ctx context.Context, in *BlockRequest, opts ...grpc.CallOption) (*BlockResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockResponse)
+	err := c.cc.Invoke(ctx, Greeter_BlockUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GreeterServer is the server API for Greeter service.
 // All implementations must embed UnimplementedGreeterServer
 // for forward compatibility.
 type GreeterServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	SendChat(context.Context, *ChatRequest) (*Recived, error)
+	BlockUser(context.Context, *BlockRequest) (*BlockResponse, error)
 	mustEmbedUnimplementedGreeterServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*Hel
 }
 func (UnimplementedGreeterServer) SendChat(context.Context, *ChatRequest) (*Recived, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendChat not implemented")
+}
+func (UnimplementedGreeterServer) BlockUser(context.Context, *BlockRequest) (*BlockResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
 }
 func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
 func (UnimplementedGreeterServer) testEmbeddedByValue()                 {}
@@ -138,6 +154,24 @@ func _Greeter_SendChat_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Greeter_BlockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).BlockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Greeter_BlockUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).BlockUser(ctx, req.(*BlockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendChat",
 			Handler:    _Greeter_SendChat_Handler,
+		},
+		{
+			MethodName: "BlockUser",
+			Handler:    _Greeter_BlockUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

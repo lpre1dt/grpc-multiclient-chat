@@ -205,6 +205,102 @@ func (x *HelloReply) GetMessage() string {
 	return ""
 }
 
+type BlockRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockRequest) Reset() {
+	*x = BlockRequest{}
+	mi := &file_greeter_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockRequest) ProtoMessage() {}
+
+func (x *BlockRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_greeter_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockRequest.ProtoReflect.Descriptor instead.
+func (*BlockRequest) Descriptor() ([]byte, []int) {
+	return file_greeter_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *BlockRequest) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type BlockResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlockResponse) Reset() {
+	*x = BlockResponse{}
+	mi := &file_greeter_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlockResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlockResponse) ProtoMessage() {}
+
+func (x *BlockResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_greeter_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlockResponse.ProtoReflect.Descriptor instead.
+func (*BlockResponse) Descriptor() ([]byte, []int) {
+	return file_greeter_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *BlockResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *BlockResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_greeter_proto protoreflect.FileDescriptor
 
 const file_greeter_proto_rawDesc = "" +
@@ -219,10 +315,16 @@ const file_greeter_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"&\n" +
 	"\n" +
 	"HelloReply\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2y\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"*\n" +
+	"\fBlockRequest\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\"C\n" +
+	"\rBlockResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\xb7\x01\n" +
 	"\aGreeter\x128\n" +
 	"\bSayHello\x12\x15.greeter.HelloRequest\x1a\x13.greeter.HelloReply\"\x00\x124\n" +
-	"\bSendChat\x12\x14.greeter.ChatRequest\x1a\x10.greeter.Recived\"\x00B\x14Z\x12grpc-example/protob\x06proto3"
+	"\bSendChat\x12\x14.greeter.ChatRequest\x1a\x10.greeter.Recived\"\x00\x12<\n" +
+	"\tBlockUser\x12\x15.greeter.BlockRequest\x1a\x16.greeter.BlockResponse\"\x00B\x14Z\x12grpc-example/protob\x06proto3"
 
 var (
 	file_greeter_proto_rawDescOnce sync.Once
@@ -236,20 +338,24 @@ func file_greeter_proto_rawDescGZIP() []byte {
 	return file_greeter_proto_rawDescData
 }
 
-var file_greeter_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_greeter_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_greeter_proto_goTypes = []any{
-	(*HelloRequest)(nil), // 0: greeter.HelloRequest
-	(*ChatRequest)(nil),  // 1: greeter.ChatRequest
-	(*Recived)(nil),      // 2: greeter.Recived
-	(*HelloReply)(nil),   // 3: greeter.HelloReply
+	(*HelloRequest)(nil),  // 0: greeter.HelloRequest
+	(*ChatRequest)(nil),   // 1: greeter.ChatRequest
+	(*Recived)(nil),       // 2: greeter.Recived
+	(*HelloReply)(nil),    // 3: greeter.HelloReply
+	(*BlockRequest)(nil),  // 4: greeter.BlockRequest
+	(*BlockResponse)(nil), // 5: greeter.BlockResponse
 }
 var file_greeter_proto_depIdxs = []int32{
 	0, // 0: greeter.Greeter.SayHello:input_type -> greeter.HelloRequest
 	1, // 1: greeter.Greeter.SendChat:input_type -> greeter.ChatRequest
-	3, // 2: greeter.Greeter.SayHello:output_type -> greeter.HelloReply
-	2, // 3: greeter.Greeter.SendChat:output_type -> greeter.Recived
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	4, // 2: greeter.Greeter.BlockUser:input_type -> greeter.BlockRequest
+	3, // 3: greeter.Greeter.SayHello:output_type -> greeter.HelloReply
+	2, // 4: greeter.Greeter.SendChat:output_type -> greeter.Recived
+	5, // 5: greeter.Greeter.BlockUser:output_type -> greeter.BlockResponse
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -266,7 +372,7 @@ func file_greeter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_greeter_proto_rawDesc), len(file_greeter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
