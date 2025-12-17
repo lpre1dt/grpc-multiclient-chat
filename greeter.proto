@@ -8,6 +8,8 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
   rpc SendChat (ChatRequest) returns (Recived) {}
   rpc BlockUser (BlockRequest) returns (BlockResponse) {}
+  rpc ClearMyMessages (ClearRequest) returns (ClearResponse) {}
+  rpc GetAllMessages (Empty) returns (MessagesResponse) {}
 }
 
 message HelloRequest {
@@ -32,4 +34,24 @@ message BlockRequest {
 message BlockResponse {
   string message = 1;
   bool success = 2;
+}
+
+message ClearRequest {
+  string user = 1;
+}
+
+message ClearResponse {
+  string message = 1;
+  int32 deleted_count = 2;
+}
+
+message Empty {}
+
+message ChatMessage {
+  string user = 1;
+  string message = 2;
+}
+
+message MessagesResponse {
+  repeated ChatMessage messages = 1;
 }
