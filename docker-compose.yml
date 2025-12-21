@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # gRPC Server (TypeScript/Node.js)
+  grpc-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: grpc-chat-server
+    ports:
+      - "50051:50051"
+      - "9090:9090" # Prometheus metrics endpoint
+    networks:
+      - grpc-network
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # Prometheus - Metrics Collection (OSS/CNCF Tool)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - grpc-network
+    restart: unless-stopped
+    depends_on:
+      - grpc-server
+
+  # Grafana - Visualization Dashboard (OSS/CNCF Tool)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - grpc-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # Next.js Frontend - Modern Web UI for Chat
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: grpc-chat-frontend
+    ports:
+      - "3001:3001"
+    networks:
+      - grpc-network
+    environment:
+      - NODE_ENV=production
+      - GRPC_SERVER_URL=grpc-server:50051
+    restart: unless-stopped
+    depends_on:
+      - grpc-server
+  # Go Client (Interactive - Optional, for testing)
+  # Uncomment to run a client container
+  # grpc-client:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   container_name: grpc-chat-client
+  #   networks:
+  #     - grpc-network
+  #   depends_on:
+  #     - grpc-server
+  #   stdin_open: true
+  #   tty: true
+
+networks:
+  grpc-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:

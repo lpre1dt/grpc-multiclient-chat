@@ -1,0 +1,21 @@
+# Prometheus Configuration for gRPC Chat System
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'grpc-chat-monitor'
+
+# Scrape configurations
+scrape_configs:
+  # gRPC Server Metrics
+  - job_name: 'grpc-server'
+    static_configs:
+      - targets: ['grpc-server:9090']
+        labels:
+          service: 'grpc-chat-server'
+          environment: 'production'
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

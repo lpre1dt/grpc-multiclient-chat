@@ -1,0 +1,38 @@
+# Multi-stage build for TypeScript gRPC Server
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json* ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY greeter.proto ./
+COPY server.ts ./
+
+# Build TypeScript (if needed)
+RUN npm run build 2>/dev/null || echo "No build script, using tsx runtime"
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files and install ALL dependencies (including tsx)
+COPY package*.json ./
+RUN npm install
+
+# Copy application files
+COPY greeter.proto ./
+COPY server.ts ./
+
+# Expose gRPC port
+EXPOSE 50051
+EXPOSE 9090
+
+# Start server
+CMD ["npm", "run", "server"]

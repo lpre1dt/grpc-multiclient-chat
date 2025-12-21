@@ -1,0 +1,46 @@
+# Node modules
+node_modules/
+npm-debug.log
+
+# Build output
+dist/
+build/
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+client
+server
+
+# Test files
+*.test
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation (included in image but not needed for build)
+*.md
+!README.md
+
+# Docker
+docker-compose.yml
+Dockerfile*
+
+# Prometheus/Grafana data
+prometheus-data/
+grafana-data/
